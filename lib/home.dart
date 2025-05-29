@@ -24,7 +24,25 @@ class Home extends StatelessWidget {
           SizedBox(height: 50.0,),
           const Fitur(),
           SizedBox(height: 50.0,),
-          const Pesan(),
+          Pesan(
+            kamarList: [
+              {
+                'title': 'Kamar A',
+                'price': 'Rp 500.000',
+                'image': 'images/no_image.png',
+              },
+              {
+                'title': 'Kamar B',
+                'price': 'Rp 450.000',
+                'image': 'images/no_image.png',
+              },
+              {
+                'title': 'Kamar C',
+                'price': 'Rp 550.000',
+                'image': 'images/no_image.png',
+              },
+            ],
+          ),
           SizedBox(height: 50.0,),
         ],
       )
@@ -254,14 +272,15 @@ class Fitur extends StatelessWidget {
   }
 }
 
-
 class Pesan extends StatelessWidget {
-  const Pesan({super.key});
+  final List<Map<String, String>> kamarList;
 
-   @override
+  const Pesan({super.key, required this.kamarList});
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -271,94 +290,120 @@ class Pesan extends StatelessWidget {
             textAlign: TextAlign.left,
           ),
           SizedBox(height: 10.0),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
+
+          kamarList.isEmpty
+              ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Center(
+                  child: Text(
+                    "Tidak ada kamar tersedia.",
+                    style: TextStyle(fontSize: 16.0, color: Colors.redAccent),
+                  ),
                 ),
-              ],
+              )
+              : Column(
+                children:
+                    kamarList.map((kamar) {
+                      return RoomCard(
+                        title: kamar['title'] ?? 'No Title',
+                        price: kamar['price'] ?? 'No Price',
+                        imageAsset: kamar['image'] ?? 'images/no_image.png',
+                      );
+                    }).toList(),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+class RoomCard extends StatelessWidget {
+  final String title;
+  final String price;
+  final String imageAsset;
+
+  const RoomCard({
+    super.key,
+    required this.title,
+    required this.price,
+    required this.imageAsset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 40.0), // kasih jarak antar card
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Gambar
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16.0),
             ),
+            child: Container(
+              height: 150,
+              width: double.infinity,
+              color: Colors.grey[300],
+              child: Image.asset(imageAsset, fit: BoxFit.cover),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Gambar
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16.0),
-                    topRight: Radius.circular(16.0),
-                  ),
-                  child: Container(
-                    height: 150,
-                    width: double.infinity,
-                    color: Colors.grey[300],
-                    child: Image.asset(
-                      "images/no_image.png",
-                      fit: BoxFit.cover,
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                ),
+                SizedBox(height: 4.0),
+                Text(price, style: TextStyle(color: Colors.grey[600])),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Ikon
+                Row(
+                  children: [
+                    Icon(Icons.favorite_border, color: Colors.indigo),
+                    SizedBox(width: 10),
+                    Icon(Icons.share, color: Colors.indigo),
+                  ],
+                ),
+                // Tombol
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 12.0,
                     ),
                   ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "title",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      SizedBox(height: 4.0),
-                      Text("price", style: TextStyle(color: Colors.grey[600])),
-                    ],
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Ikon
-                      Row(
-                        children: [
-                          Icon(Icons.favorite_border, color: Colors.indigo),
-                          SizedBox(width: 10),
-                          Icon(Icons.share, color: Colors.indigo),
-                        ],
-                      ),
-
-                      // Tombol Pesan Sekarang
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.indigo,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 20.0,
-                            vertical: 12.0,
-                          ),
-                        ),
-                        child: Text(
-                          'Pesan sekarang',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    'Pesan sekarang',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
